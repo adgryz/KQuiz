@@ -12,8 +12,8 @@ export default class QuizSelection extends React.Component {
     fakeQuizes = ["Favourite meals", "Scary", "Dreams", "Disgusting", "Songs"];
 
     render() {
-        const { navigate } = this.props.navigation;
         const { params } = this.props.navigation.state;
+        const username = params ? params.username : null;
         
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -31,7 +31,12 @@ export default class QuizSelection extends React.Component {
                         disabled={!this.state.selectedQuiz}
                         title="Go to friend selection"
                         color="#F44336"
-                        onPress={() => navigate('PlayerSelection')} />
+                        onPress={() => {
+                            this.props.navigation.navigate('PlayerSelection', {
+                              username: username,
+                              quiz: this.state.selectedQuiz
+                            });
+                          }} />
                 </View>
             </View>
         );

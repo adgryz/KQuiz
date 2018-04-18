@@ -10,7 +10,6 @@ export default class Landing extends React.Component {
   }
 
   render() {
-    const { navigate } = this.props.navigation;
 
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -22,15 +21,20 @@ export default class Landing extends React.Component {
         <View style={{ padding: 5, margin: 15 }}>
           <Button
             title="Start Game"
-            onPress={() => navigate('QuizSelection')} />
+            onPress={() => {
+              this.props.navigation.navigate('QuizSelection', {
+                username: this.state.username,
+              });
+            }} />
         </View>
         <View style={{ padding: 5, margin: 15 }}>
           <Button
             title="Join Game"
-            onPress={() => navigate('GameSelection',  {
-              itemId: 86,
-              otherParam: 'anything you want here',
-            })} />
+            onPress={() => {
+              this.props.navigation.navigate('GameSelection', {
+                username: this.state.username,
+              });
+            }} />
         </View>
       </View>
     );

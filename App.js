@@ -8,24 +8,34 @@ import PlayerSelection from "./GameLobby/PlayerSelection";
 import Waiting from "./GameLobby/Waiting";
 import QuizStart from "./GameLobby/QuizStart";
 
-
-export default StackNavigator({
-  Landing: {
-    screen: Landing,
+const RootStack =StackNavigator(
+  {
+    Landing: {
+      screen: Landing,
+    },
+    QuizSelection: {
+      screen: QuizSelection,
+    },
+    GameSelection: {
+      screen: GameSelection
+    },
+    PlayerSelection: {
+      screen: PlayerSelection
+    },
+    Waiting: {
+      screen: Waiting
+    },
+    QuizStart: {
+      screen: QuizStart
+    },
   },
-  QuizSelection: {
-    screen: QuizSelection,
-  },
-  GameSelection: {
-    screen: GameSelection
-  },
-  PlayerSelection: {
-    screen: PlayerSelection
-  },
-  Waiting: {
-    screen: Waiting
-  },
-  QuizStart: {
-    screen: QuizStart
+  {
+    initialRouteName: 'Landing',
   }
-});
+);
+
+export default class App extends React.Component {
+  render() {
+    return <RootStack />;
+  }
+}

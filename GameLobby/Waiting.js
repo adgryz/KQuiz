@@ -8,16 +8,28 @@ export default class Waiting extends React.Component {
         this.state = { playerAccepted: false}
 
         setTimeout(() => {
+            const { params } = props.navigation.state;
+            const username = params ? params.username : null;
+            const quiz = params ? params.quiz : null;
+            const friendname = params ? params.friendname : null;
+
             this.setState({ playerAccepted: true });
-            props.navigation.navigate('QuizStart');
+                props.navigation.navigate('QuizStart', {
+                  username: username,
+                  quiz: quiz,
+                  friendname:friendname
+                });
         }, 3000);
     }
 
     fakeQuizes = ["Favourite meals", "Scary", "Dreams", "Disgusting", "Songs"];
 
     render() {
-        const { navigate, goBack } = this.props.navigation;
-
+        const { params } = this.props.navigation.state;
+        const username = params ? params.username : null;
+        const quiz = params ? params.quiz : null;
+        const friendname = params ? params.friendname : null;
+        
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Waiting for acceptance ...</Text>
@@ -26,7 +38,7 @@ export default class Waiting extends React.Component {
                     <Button
                         title="Cancel"
                         color="#F44336"
-                        onPress={() => goBack()} />
+                        onPress={() => this.props.navigation.goBack()} />
                 </View>
             </View>
         );

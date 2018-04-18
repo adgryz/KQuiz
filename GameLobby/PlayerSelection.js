@@ -11,7 +11,9 @@ export default class PlayerSelection extends React.Component {
     fakePlayers = ["Wojtek", "Jasiek", "Kinga"];
 
     render() {
-        const { navigate } = this.props.navigation;
+        const { params } = this.props.navigation.state;
+        const username = params ? params.username : null;
+        const quiz= params ? params.quiz : null;
         
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -29,7 +31,13 @@ export default class PlayerSelection extends React.Component {
                         disabled={!this.state.selectedPlayer}
                         title="Start Game"
                         color="#F44336"
-                        onPress={() => navigate('QuizStart', {username: this.props.username})} />
+                        onPress={() => {
+                            this.props.navigation.navigate('QuizStart', {
+                              username: username,
+                              friendname: this.state.selectedPlayer,
+                              quiz: quiz
+                            });
+                          }} />
                 </View>
             </View>
         );

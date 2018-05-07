@@ -37,8 +37,6 @@ export default class PlayerSelection extends React.Component {
         );
     }
 
-    //fakePlayers = ["Wojtek", "Jasiek", "Kinga"];
-
     render() {
         const { params } = this.props.navigation.state;
         const username = params ? params.username : null;

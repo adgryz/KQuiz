@@ -14,6 +14,7 @@ export class PlayerQuestion extends React.Component {
                 <Text>{this.props.question.text}</Text>
                 {
                     this.props.question.answers.map(answer => <Text
+                        key={answer}
                         onPress={() => this.props.onSelect(answer)}
                         style={{ color: this.props.selectedAnswer === answer ? "#673AB7" : "#2196F3" }}>
                         {answer}

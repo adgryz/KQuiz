@@ -76,6 +76,11 @@ export default class Quiz extends React.Component {
     }
 
     changePhase = () => {
+        const { params } = this.props.navigation.state;
+        if (this.state.questionNo === params.quiz.questions.length - 1) {
+            this.props.navigation.navigate('Landing', {});
+        }
+
         if (this.state.phase == "player")
             this.setState({ phase: "friend" });
 

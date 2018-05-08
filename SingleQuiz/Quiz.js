@@ -4,12 +4,14 @@ import { StackNavigator } from 'react-navigation';
 import { PlayerQuestion } from './PlayerQuestion';
 import { FriendQuestion } from './FriendQuestion';
 import { Answers } from './Answers';
+import { AnswerWaiting } from './AnswerWaiting';
+import { gameService } from '../communication/GameService';
 
 export default class Quiz extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { phase: "player", questionNo: 0, yourScore: 0, friendScore: 0 }
+        this.state = { phase: "player", questionNo: 0, yourScore: 0, friendScore: 0, receivedAnswers: false }
     }
 
     render() {
@@ -39,12 +41,19 @@ export default class Quiz extends React.Component {
                         onSelect={this.onGuess} />
                 }
                 {
+                    this.state.phase === "waiting" &&
+                    <AnswerWaiting
+                        friendname={friendname} />
+                }
+                {
                     this.state.phase === "answer" &&
                     <Answers
                         question={quiz.questions[this.state.questionNo]}
                         friendname={friendname}
                         yourAnswer={this.state.yourAnswer}
                         yourGuess={this.state.yourGuess}
+                        friendAnswer={this.state.friendAnswer}
+                        friendGuess={this.state.friendGuess}
                         changeScores={this.changeScores} />
                 }
                 <View style={{ padding: 10 }}>
@@ -78,6 +87,8 @@ export default class Quiz extends React.Component {
 
     changePhase = () => {
         const { params } = this.props.navigation.state;
+        let currentQuestion = params.quiz.questions[this.state.questionNo];
+
         if (this.state.questionNo === params.quiz.questions.length - 1 && this.state.phase == "answer") {
             this.props.navigation.navigate('Landing', {});
         }
@@ -85,11 +96,22 @@ export default class Quiz extends React.Component {
         if (this.state.phase == "player")
             this.setState({ phase: "friend" });
 
-        if (this.state.phase == "friend")
+        if (this.state.phase == "friend" && !this.state.receivedAnswers) {
+            let answerInd = currentQuestion.answers.indexOf(this.state.yourAnswer); // TU COS MOGLO SIE WYJEBAC :P
+            let guessInd = currentQuestion.answers.indexOf(this.state.yourGuess);
+            gameService.sendAnswers(answerInd, guessInd);
+            this.setState({ phase: "waiting" });
+
+            gameService.onAnswersReceived((answerId, guessId) => {
+                this.setState({ friendAnswer: currentQuestion.answers[answerId], friendGuess: currentQuestion[guessId], phase: "answer" });
+            })
+        }
+
+        if (this.state.phase == "friend" && this.state.receivedAnswers)
             this.setState({ phase: "answer" });
 
         if (this.state.phase == "answer" && this.state.questionNo !== params.quiz.questions.length - 1)
-            this.setState({ phase: "player", questionNo: this.state.questionNo + 1, yourAnswer: undefined, yourGuess: undefined });
+            this.setState({ phase: "player", questionNo: this.state.questionNo + 1, yourAnswer: undefined, yourGuess: undefined, receivedAnswers: false });
     }
 
     changeScores = (yourChange, friendChange) => {

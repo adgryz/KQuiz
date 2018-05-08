@@ -40,12 +40,12 @@ export default class QuizSelection extends React.Component {
                 }
             ]
         }
-        ];
+    ];
 
     render() {
         const { params } = this.props.navigation.state;
         const username = params ? params.username : null;
-        
+
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Select Quiz : </Text>
@@ -64,10 +64,10 @@ export default class QuizSelection extends React.Component {
                         color="#F44336"
                         onPress={() => {
                             this.props.navigation.navigate('PlayerSelection', {
-                              username: username,
-                              quiz: this.state.selectedQuiz
+                                username: username,
+                                quiz: this.fakeQuizes.filter(quiz => quiz.title == this.state.selectedQuiz)[0]
                             });
-                          }} />
+                        }} />
                 </View>
             </View>
         );

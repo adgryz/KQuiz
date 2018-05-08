@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
-import NearbyConnection, {CommonStatusCodes, ConnectionsStatusCodes, Strategy, Payload, PayloadTransferUpdate} from 'react-native-google-nearby-connection';
+import NearbyConnection, { CommonStatusCodes, ConnectionsStatusCodes, Strategy, Payload, PayloadTransferUpdate } from 'react-native-google-nearby-connection';
 
 export default class PlayerSelection extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { 
-            params: props.navigation.state,    
+        this.state = {
+            params: props.navigation.state,
             selectedPlayer: undefined,
             players: []
         }
@@ -23,13 +23,13 @@ export default class PlayerSelection extends React.Component {
         }) => {
             // Connection has been initated
 
-            this.state.players.push({id: endpointId, name: endpointName});
+            this.state.players.push({ id: endpointId, name: endpointName });
 
             this.setState({
                 players: this.state.players
             });
         });
-        
+
         NearbyConnection.startAdvertising(
             this.state.params.username,               // This nodes endpoint name
             "KQUIZ",              // A unique identifier for the service
@@ -40,8 +40,8 @@ export default class PlayerSelection extends React.Component {
     render() {
         const { params } = this.props.navigation.state;
         const username = params ? params.username : null;
-        const quiz= params ? params.quiz : null;
-        
+        const quiz = params ? params.quiz : null;
+
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Select Player : </Text>
@@ -55,16 +55,17 @@ export default class PlayerSelection extends React.Component {
                 }
                 <View style={{ padding: 10 }}>
                     <Button
-                        disabled={!this.state.selectedPlayer}
+                        disabled={this.state.selectedPlayer}
                         title="Start Game"
                         color="#F44336"
                         onPress={() => {
                             this.props.navigation.navigate('QuizStart', {
-                              username: username,
-                              friendname: this.state.selectedPlayer.name,
-                              quiz: quiz
+                                username: username,
+                                // friendname: this.state.selectedPlayer.name,
+                                friendname: "someFirend",
+                                quiz: quiz
                             });
-                          }} />
+                        }} />
                 </View>
             </View>
         );

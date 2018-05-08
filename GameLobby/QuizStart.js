@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
+import { StackNavigator } from 'react-navigation';
 
 export default class QuizStart extends React.Component {
 
@@ -11,22 +12,21 @@ export default class QuizStart extends React.Component {
             const { params } = props.navigation.state;
             const username = params ? params.username : null;
             const friendname = params ? params.friendname : null;
-            const quiz= params ? params.quiz : null;
-
-            this.props.navigation.navigate('Quiz', {
+            const quiz = params ? params.quiz : null;
+            props.navigation.navigate('Quiz', {
                 username: username,
                 friendname: friendname,
                 quiz: quiz
-             });
-        }, 3000);
-      
+            });
+        }, 1000);
+
     }
 
     render() {
         const { params } = this.props.navigation.state;
         const username = params ? params.username : null;
         const friendname = params ? params.friendname : null;
-        const quiz= params ? params.quiz : null;
+        const quiz = params ? params.quiz : null;
 
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -38,5 +38,5 @@ export default class QuizStart extends React.Component {
         );
     }
 
-    
+
 }

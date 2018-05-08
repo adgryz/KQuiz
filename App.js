@@ -7,8 +7,9 @@ import GameSelection from "./GameLobby/GameSelection";
 import PlayerSelection from "./GameLobby/PlayerSelection";
 import Waiting from "./GameLobby/Waiting";
 import QuizStart from "./GameLobby/QuizStart";
+import Quiz from "./SingleQuiz/Quiz"
 
-const RootStack =StackNavigator(
+const RootStack = StackNavigator(
   {
     Landing: {
       screen: Landing,
@@ -28,6 +29,9 @@ const RootStack =StackNavigator(
     QuizStart: {
       screen: QuizStart
     },
+    Quiz: {
+      screen: Quiz
+    }
   },
   {
     initialRouteName: 'Landing',

@@ -8,7 +8,7 @@ import PlayerSelection from "./GameLobby/PlayerSelection";
 import Waiting from "./GameLobby/Waiting";
 import QuizStart from "./GameLobby/QuizStart";
 
-const RootStack =StackNavigator(
+const RootStack = StackNavigator(
   {
     Landing: {
       screen: Landing,

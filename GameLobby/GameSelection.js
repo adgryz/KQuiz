@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
-import NearbyConnection, {CommonStatusCodes, ConnectionsStatusCodes, Strategy, Payload, PayloadTransferUpdate} from 'react-native-google-nearby-connection';
+import { gameService } from '../communication/GameService';
 
 export default class GameSelection extends React.Component {
 
@@ -8,28 +8,23 @@ export default class GameSelection extends React.Component {
         super(props);
         this.state = { 
             selectedGame: undefined, 
-            availableGames: [] }
+            availableGames: []
+        };
     }
 
     componentDidMount() {
-        NearbyConnection.onEndpointDiscovered(({
-            endpointId,             // ID of the endpoint wishing to connect
-            endpointName,           // The name of the remote device we're connecting to.
-            serviceId               // A unique identifier for the service
+        gameService.searchForGames(({
+            gameId,
+            gameName,
         }) => {
             // An endpoint has been discovered we can connect to
-            console.warn("endpoint discovered: " + endpointId + " " + endpointName);
-            this.state.availableGames.push({ id: endpointId, owner: endpointName });
+            console.warn("endpoint discovered: " + gameId + " " + gameName);
+            this.state.availableGames.push({ id: gameId, owner: gameName });
             
             this.setState({
-                availableGames: this.state.availableGames 
+                availableGames: this.state.availableGames
             });
         });
-
-        NearbyConnection.startDiscovering(
-            "KQUIZ",
-            Strategy.P2P_STAR                // A unique identifier for the service
-        );
     }
 
     //fakeGames = [{quiz: "Favourite meals", owner: "Kinga"}, {quiz: "Scary", owner: "Adam"}];
@@ -55,10 +50,9 @@ export default class GameSelection extends React.Component {
                         title="Start Game"
                         color="#F44336"
                         onPress={() => {
-                            NearbyConnection.connectToEndpoint("KQUIZ", this.state.selectedGame.id);
-
                             this.props.navigation.navigate('Waiting', {
                               username: username,
+                              gameId: this.state.selectedGame.id,
                               quiz: this.state.selectedGame.quiz,
                               friendname: this.state.selectedGame.owner
                             });

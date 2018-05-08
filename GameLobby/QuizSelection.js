@@ -11,6 +11,7 @@ export default class QuizSelection extends React.Component {
 
     fakeQuizes = [
         {
+            id: 1,
             title: "Favourite meals",
             questions: [
                 {
@@ -28,6 +29,7 @@ export default class QuizSelection extends React.Component {
             ]
         },
         {
+            id: 2,
             title: "Scary",
             questions: [
                 {

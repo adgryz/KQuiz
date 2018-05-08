@@ -9,7 +9,7 @@ export default class Quiz extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { phase: "player", questionNo: 0 }
+        this.state = { phase: "player", questionNo: 0, yourScore: 0, friendScore: 0 }
     }
 
     render() {
@@ -21,6 +21,8 @@ export default class Quiz extends React.Component {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Text>Question {this.state.questionNo + 1}</Text>
+                <Text>Your Score : {this.state.yourScore}</Text>
+                <Text>Friend's Score: {this.state.friendScore}</Text>
                 {
                     this.state.phase === "player" &&
                     <PlayerQuestion
@@ -39,8 +41,10 @@ export default class Quiz extends React.Component {
                 {
                     this.state.phase === "answer" &&
                     <Answers
+                        friendname={friendname}
                         yourAnswer={this.state.yourAnswer}
-                        yourGuess={this.state.yourGuess} />
+                        yourGuess={this.state.yourGuess}
+                        changeScores={this.changeScores} />
                 }
                 <View style={{ padding: 10 }}>
                     <Button
@@ -80,5 +84,12 @@ export default class Quiz extends React.Component {
 
         if (this.state.phase == "answer")
             this.setState({ phase: "player", questionNo: this.state.questionNo + 1, yourAnswer: undefined, yourGuess: undefined });
+    }
+
+    changeScores = (yourChange, friendChange) => {
+        this.setState({
+            yourScore: this.state.yourScore + yourChange,
+            friendScore: this.state.friendScore + friendChange
+        });
     }
 }

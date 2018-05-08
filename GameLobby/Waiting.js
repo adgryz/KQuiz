@@ -5,21 +5,26 @@ export default class Waiting extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { playerAccepted: false}
+        this.state = { playerAccepted: false };
+    }
 
-        setTimeout(() => {
-            const { params } = props.navigation.state;
-            const username = params ? params.username : null;
-            const quiz = params ? params.quiz : null;
-            const friendname = params ? params.friendname : null;
+    componentDidMount() {
+        gameService.joinGame(
+            this.state.selectedGame.id,
+            () => {
+                const { params } = props.navigation.state;
+                const username = params ? params.username : null;
+                const quiz = params ? params.quiz : null;
+                const friendname = params ? params.friendname : null;
 
-            this.setState({ playerAccepted: true });
+                this.setState({ playerAccepted: true });
                 props.navigation.navigate('QuizStart', {
-                  username: username,
-                  quiz: quiz,
-                  friendname:friendname
+                    username: username,
+                    quiz: quiz,
+                    friendname:friendname
                 });
-        }, 3000);
+            }
+        );
     }
 
     fakeQuizes = ["Favourite meals", "Scary", "Dreams", "Disgusting", "Songs"];

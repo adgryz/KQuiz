@@ -6,8 +6,8 @@ export default class GameSelection extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { 
-            selectedGame: undefined, 
+        this.state = {
+            selectedGame: undefined,
             availableGames: []
         };
     }
@@ -20,14 +20,12 @@ export default class GameSelection extends React.Component {
             // An endpoint has been discovered we can connect to
             console.warn("endpoint discovered: " + gameId + " " + gameName);
             this.state.availableGames.push({ id: gameId, owner: gameName });
-            
+
             this.setState({
                 availableGames: this.state.availableGames
             });
         });
     }
-
-    //fakeGames = [{quiz: "Favourite meals", owner: "Kinga"}, {quiz: "Scary", owner: "Adam"}];
 
     render() {
         const { params } = this.props.navigation.state;
@@ -51,12 +49,11 @@ export default class GameSelection extends React.Component {
                         color="#F44336"
                         onPress={() => {
                             this.props.navigation.navigate('Waiting', {
-                              username: username,
-                              gameId: this.state.selectedGame.id,
-                              quiz: this.state.selectedGame.quiz,
-                              friendname: this.state.selectedGame.owner
+                                username: username,
+                                gameId: this.state.selectedGame.id,
+                                friendname: this.state.selectedGame.owner
                             });
-                          }}/>
+                        }} />
                 </View>
             </View>
         );

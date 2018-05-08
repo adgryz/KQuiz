@@ -41,6 +41,7 @@ export default class Quiz extends React.Component {
                 {
                     this.state.phase === "answer" &&
                     <Answers
+                        question={quiz.questions[this.state.questionNo]}
                         friendname={friendname}
                         yourAnswer={this.state.yourAnswer}
                         yourGuess={this.state.yourGuess}

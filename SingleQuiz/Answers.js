@@ -14,10 +14,14 @@ export class Answers extends React.Component {
 
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text>You like: {this.props.yourAnswer}</Text>
-                <Text>{this.props.friendname} answered you like: {friendGuess}</Text>
-                <Text>{this.props.friendname} likes: {friendAnswer}</Text>
-                <Text>You answered {this.props.friendname} likes: {this.props.yourGuess}</Text>
+                <Text>Qustion :</Text>
+                <Text>{this.props.question.text}</Text>
+                <Text></Text>
+                <Text>Answer about you: {this.props.yourAnswer}</Text>
+                <Text>{this.props.friendname}'s guess about you: {friendGuess}</Text>
+                <Text></Text>
+                <Text>Answer about {this.props.friendname}: {friendAnswer}</Text>
+                <Text>Your guess about {this.props.friendname}: {this.props.yourGuess}</Text>
             </View>
         );
     }

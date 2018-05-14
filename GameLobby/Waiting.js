@@ -1,24 +1,29 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
+import { gameService } from '../communication/GameService.js'
 
 export default class Waiting extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { playerAccepted: false };
+        const { params } = props.navigation.state;
+
+        this.state = { playerAccepted: false, gameId: params.gameId };
     }
 
     componentDidMount() {
         gameService.joinGame(
-            this.state.selectedGame.id,
+            this.state.gameId,
             () => {
-                gameService.onReceivedGameDetails((quizId) => {
-                    const { params } = props.navigation.state;
+                gameService.onGameDetailsReceived((quizId) => {
+                    console.warn("game details received");
+
+                    const { params } = this.props.navigation.state;
                     const username = params ? params.username : null;
                     const friendname = params ? params.friendname : null;
 
                     this.setState({ playerAccepted: true });
-                    props.navigation.navigate('QuizStart', {
+                    this.props.navigation.navigate('QuizStart', {
                         username: username,
                         quiz: this.fakeQuizes.filter(quiz => quiz.id === quizId)[0],
                         friendname: friendname

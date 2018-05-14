@@ -23,10 +23,11 @@ export default class PlayerSelection extends React.Component {
                 playerId,
                 playerName
             }) => {
-                this.state.players.push({id: playerId, name: playerName});
-    
+                let players = Array.from(this.state.players);
+                players.push({id: playerId, name: playerName});
+                
                 this.setState({
-                    players: this.state.players
+                    players: players
                 });
             }
         );
@@ -50,16 +51,18 @@ export default class PlayerSelection extends React.Component {
                 }
                 <View style={{ padding: 10 }}>
                     <Button
-                        disabled={this.state.selectedPlayer}
+                        disabled={this.state.selectedPlayer === undefined}
                         title="Start Game"
                         color="#F44336"
                         onPress={() => {
+                            console.warn("asd");
                             gameService.choosePlayer(this.state.selectedPlayer.id);
+                            gameService.sendQuizId(quiz.id);
 
                             this.props.navigation.navigate('QuizStart', {
                                 username: username,
                                 // friendname: this.state.selectedPlayer.name,
-                                friendname: "someFirend",
+                                friendname: "someFriend",
                                 quiz: quiz
                             });
                         }} />

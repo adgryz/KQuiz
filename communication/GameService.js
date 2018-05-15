@@ -36,6 +36,8 @@ export default class GameService {
     }
 
     joinGame(gameId, acceptCallback) {
+        this.gameDetailsCallback = acceptCallback;
+
         NearbyConnection.onConnectionInitiatedToEndpoint(({
             endpointId,             // ID of the endpoint wishing to connect
             endpointName,           // The name of the remote device we're connecting to.
@@ -55,6 +57,42 @@ export default class GameService {
             console.warn("connected to endpoint");
 
             this.endpointId = endpointId;
+
+            NearbyConnection.onReceivePayload(({
+                serviceId,              // A unique identifier for the service
+                endpointId,             // ID of the endpoint we got the payload from
+                payloadType,            // The type of this payload (File or a Stream) [See Payload](https://developers.google.com/android/reference/com/google/android/gms/nearby/connection/Payload)
+                payloadId               // Unique identifier of the payload
+            }) => {
+                console.warn("onreceivepayload");
+                NearbyConnection.readBytes(
+                    serviceId, 
+                    endpointId, 
+                    payloadId
+                ).then(({
+                    type,                    // The Payload.Type represented by this payload
+                    bytes,                   // \[Payload\.Type\.BYTES\] The bytes string that was sent
+                    payloadId,               // \[Payload\.Type\.FILE\ or Payload\.Type\.STREAM\] The payloadId of the payload this payload is describing
+                    filename,                // \[Payload\.Type\.FILE\] The name of the file being sent
+                    metadata,                // \[Payload\.Type\.FILE\] The metadata sent along with the file
+                    streamType,              // \[Payload\.Type\.STREAM\] The type of stream this is \[audio or video\]
+                }) => {
+                    console.warn(bytes);
+                    
+                    let obj = JSON.parse(bytes);
+
+                    if (!obj['type'])
+                        console.error('received corrupted message');
+
+                    if (obj['type'] === 'GameDetails')
+                        this.handleQuizIdMessage(obj);
+                    else if (obj['type'] === 'Answers')
+                        this.handleAnswersMessage(obj);
+                    
+                    //callback(parseInt(bytes));
+                });
+            });
+
             acceptCallback();
         });
 
@@ -70,66 +108,38 @@ export default class GameService {
 
     sendQuizId(quizId) {
         console.warn("sending: " + quizId);
-        NearbyConnection.sendBytes(serviceId, this.endpointId, quizId);
+        let obj = { type: "GameDetails", quizId: quizId };
+        NearbyConnection.sendBytes(serviceId, this.endpointId, JSON.stringify(obj));
     }
 
     onGameDetailsReceived(callback) {
-        console.warn("ongamedetailsreceived");
-        NearbyConnection.onReceivePayload(({
-            serviceId,              // A unique identifier for the service
-            endpointId,             // ID of the endpoint we got the payload from
-            payloadType,            // The type of this payload (File or a Stream) [See Payload](https://developers.google.com/android/reference/com/google/android/gms/nearby/connection/Payload)
-            payloadId               // Unique identifier of the payload
-        }) => {
-            console.warn("onreceivepayload");
-            NearbyConnection.readBytes(
-                serviceId, 
-                endpointId, 
-                payloadId
-            ).then(({
-                type,                    // The Payload.Type represented by this payload
-                bytes,                   // \[Payload\.Type\.BYTES\] The bytes string that was sent
-                payloadId,               // \[Payload\.Type\.FILE\ or Payload\.Type\.STREAM\] The payloadId of the payload this payload is describing
-                filename,                // \[Payload\.Type\.FILE\] The name of the file being sent
-                metadata,                // \[Payload\.Type\.FILE\] The metadata sent along with the file
-                streamType,              // \[Payload\.Type\.STREAM\] The type of stream this is \[audio or video\]
-            }) => {
-                console.warn(bytes);
-                callback(parseInt(bytes));
-            });
-        });
+        this.gameDetailsCallback = callback;
     }
 
     sendAnswers(answerInd, friendAnswerInd) {
-        NearbyConnection.onReceivePayload(() => {}); // ignore payload
-        NearbyConnection.sendBytes(serviceId, this.endpointId, answerInd.toString() + ":" + friendAnswerInd.toString());
+        let obj = {
+            type: "Answers",
+            answer: answerInd,
+            guess: friendAnswerInd
+        };
+
+        NearbyConnection.sendBytes(serviceId, this.endpointId, JSON.stringify(obj));
     }
 
     onAnswersReceived(callback) {
-        NearbyConnection.onReceivePayload(({
-            serviceId,              // A unique identifier for the service
-            endpointId,             // ID of the endpoint we got the payload from
-            payloadType,            // The type of this payload (File or a Stream) [See Payload](https://developers.google.com/android/reference/com/google/android/gms/nearby/connection/Payload)
-            payloadId               // Unique identifier of the payload
-        }) => {
-            console.warn("onreceivepayload");
-            NearbyConnection.readBytes(
-                serviceId, 
-                endpointId, 
-                payloadId
-            ).then(({
-                type,                    // The Payload.Type represented by this payload
-                bytes,                   // \[Payload\.Type\.BYTES\] The bytes string that was sent
-                payloadId,               // \[Payload\.Type\.FILE\ or Payload\.Type\.STREAM\] The payloadId of the payload this payload is describing
-                filename,                // \[Payload\.Type\.FILE\] The name of the file being sent
-                metadata,                // \[Payload\.Type\.FILE\] The metadata sent along with the file
-                streamType,              // \[Payload\.Type\.STREAM\] The type of stream this is \[audio or video\]
-            }) => {
-                console.warn(bytes);
-                let inds = bytes.split(":");
-                callback(parseInt(inds[0]), parseInt(inds[1]));
-            });
-        });
+        this.answersCallback = callback;
+    }
+
+    handleQuizIdMessage(msg) {
+        if (!!this.gameDetailsCallback) {
+            this.gameDetailsCallback(msg.quizId);
+        }
+    }
+
+    handleAnswersMessage(msg) {
+        if (!!this.answersCallback) {
+            this.answersCallback(msg.answer, msg.guess);
+        }
     }
 }
 

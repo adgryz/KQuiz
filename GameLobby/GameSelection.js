@@ -30,7 +30,7 @@ export default class GameSelection extends React.Component {
     render() {
         const { params } = this.props.navigation.state;
         const username = params ? params.username : null;
-i
+
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Join Game : </Text>

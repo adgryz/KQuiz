@@ -12,6 +12,18 @@ export default class Quiz extends React.Component {
     constructor(props) {
         super(props);
         this.state = { phase: "player", questionNo: 0, yourScore: 0, friendScore: 0, receivedAnswers: false }
+
+        gameService.onAnswersReceived((answerId, guessId) => {
+            console.warn("answers received");
+            const { params } = this.props.navigation.state;
+            let currentQuestion = params.quiz.questions[this.state.questionNo];
+            this.setState(
+                { 
+                    friendAnswer: currentQuestion.answers[answerId], 
+                    friendGuess: currentQuestion.answers[guessId], 
+                    receivedAnswers: true
+                });
+        })
     }
 
     render() {
@@ -93,24 +105,29 @@ export default class Quiz extends React.Component {
             this.props.navigation.navigate('Landing', {});
         }
 
-        if (this.state.phase == "player")
+        else if (this.state.phase == "player")
             this.setState({ phase: "friend" });
 
-        if (this.state.phase == "friend" && !this.state.receivedAnswers) {
-            let answerInd = currentQuestion.answers.indexOf(this.state.yourAnswer); // TU COS MOGLO SIE WYJEBAC :P
+            // gameService.onAnswersReceived((answerId, guessId) => {
+            //     this.setState({ friendAnswer: currentQuestion.answers[answerId], friendGuess: currentQuestion[guessId], receivedAnswers: true });
+            // })
+
+        else if (this.state.phase == "friend" || this.state.phase == "waiting" && !this.state.receivedAnswers) {
+            let answerInd = currentQuestion.answers.indexOf(this.state.yourAnswer);
             let guessInd = currentQuestion.answers.indexOf(this.state.yourGuess);
             gameService.sendAnswers(answerInd, guessInd);
+            console.warn("answers sent");
             this.setState({ phase: "waiting" });
-
-            gameService.onAnswersReceived((answerId, guessId) => {
-                this.setState({ friendAnswer: currentQuestion.answers[answerId], friendGuess: currentQuestion[guessId], phase: "answer" });
-            })
         }
 
-        if (this.state.phase == "friend" && this.state.receivedAnswers)
+        else if (this.state.phase == "friend" || this.state.phase == "waiting" && this.state.receivedAnswers) {
+            let answerInd = currentQuestion.answers.indexOf(this.state.yourAnswer);
+            let guessInd = currentQuestion.answers.indexOf(this.state.yourGuess);
+            gameService.sendAnswers(answerInd, guessInd);
             this.setState({ phase: "answer" });
+        }
 
-        if (this.state.phase == "answer" && this.state.questionNo !== params.quiz.questions.length - 1)
+        else if (this.state.phase == "answer" && this.state.questionNo !== params.quiz.questions.length - 1)
             this.setState({ phase: "player", questionNo: this.state.questionNo + 1, yourAnswer: undefined, yourGuess: undefined, receivedAnswers: false });
     }
 

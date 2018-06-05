@@ -5,7 +5,8 @@ export class Answers extends React.Component {
 
     constructor(props) {
         super(props);
-
+        
+        this.updateScores();
     }
 
     render() {
@@ -26,6 +27,9 @@ export class Answers extends React.Component {
     updateScores = () => {
         let yourChange = this.props.yourGuess === this.props.friendAnswer ? 1 : 0;
         let friendChange = this.props.friendGuess === this.props.yourAnswer ? 1 : 0;
+        console.warn("yourChange: " + yourChange);
+        console.warn("friendChange: " + friendChange);
+
         this.props.changeScores(yourChange, friendChange);
     }
 

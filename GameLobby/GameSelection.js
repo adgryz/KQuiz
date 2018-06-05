@@ -38,7 +38,7 @@ export default class GameSelection extends React.Component {
                     this.state.availableGames.map(game => <View key={game.id + game.owner} style={{ padding: 5 }}>
                         <Button
                             color={this.state.selectedGame === game ? "#673AB7" : "#2196F3"}
-                            title={game.id + " by " + game.owner}
+                            title={game.owner}
                             onPress={() => this.selectGame(game)} />
                     </View>)
                 }

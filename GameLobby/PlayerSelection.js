@@ -63,8 +63,8 @@ export default class PlayerSelection extends React.Component {
 
                             this.props.navigation.navigate('QuizStart', {
                                 username: username,
-                                // friendname: this.state.selectedPlayer.name,
-                                friendname: "someFriend",
+                                friendname: this.state.selectedPlayer.name,
+                                // friendname: "someFriend",
                                 quiz: quiz
                             });
                         }} />

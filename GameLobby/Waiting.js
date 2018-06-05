@@ -9,12 +9,13 @@ export default class Waiting extends React.Component {
         super(props);
         const { params } = props.navigation.state;
 
-        this.state = { playerAccepted: false, gameId: params.gameId};
+        this.state = { playerAccepted: false, gameId: params.gameId, username: params.username };
     }
 
     componentDidMount() {
         gameService.joinGame(
             this.state.gameId,
+            this.state.username,
             () => {
                 gameService.onGameDetailsReceived(async (quizId) => {
                     console.warn("game details received");

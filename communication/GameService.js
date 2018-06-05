@@ -18,6 +18,8 @@ export default class GameService {
     }
 
     createGame(gameName, playerJoinCallback) {
+        this.playerNameCallback = playerJoinCallback;
+
         NearbyConnection.onConnectionInitiatedToEndpoint(({
             endpointId,             // ID of the endpoint wishing to connect
             endpointName,           // The name of the remote device we're connecting to.
@@ -25,7 +27,18 @@ export default class GameService {
             serviceId,              // A unique identifier for the service
             incomingConnection      // True if the connection request was initated from a remote device.
         }) => {
-            playerJoinCallback({playerId: endpointId, playerName: endpointName});
+            
+            //playerJoinCallback({playerId: endpointId, playerName: ""});
+            NearbyConnection.acceptConnection(serviceId, endpointId);
+        });
+
+        NearbyConnection.onConnectedToEndpoint(({
+            endpointId,             // ID of the endpoint we connected to
+            endpointName,           // The name of the service
+            serviceId,              // A unique identifier for the service
+        }) => {
+            console.warn("connected to endpoint");
+            this.onReceivePayload();
         });
 
         NearbyConnection.startAdvertising(
@@ -35,7 +48,7 @@ export default class GameService {
         );
     }
 
-    joinGame(gameId, acceptCallback) {
+    joinGame(gameId, playerName, acceptCallback) {
         this.gameDetailsCallback = acceptCallback;
 
         NearbyConnection.onConnectionInitiatedToEndpoint(({
@@ -59,8 +72,7 @@ export default class GameService {
             this.endpointId = endpointId;
 
             this.onReceivePayload();
-
-            acceptCallback();
+            this.sendPlayerName(playerName);
         });
 
         console.warn("gameId: " + gameId);
@@ -88,24 +100,35 @@ export default class GameService {
                     this.handleQuizIdMessage(obj);
                 else if (obj['type'] === 'Answers')
                     this.handleAnswersMessage(obj);
+                else if (obj['type'] === 'PlayerName')
+                    this.handlePlayerNameMessage(endpointId, obj);
             });
         });
     }
 
     choosePlayer(playerId) {
         console.warn("accept connection from player: " + playerId);
-        NearbyConnection.acceptConnection(serviceId, playerId);
+        //NearbyConnection.acceptConnection(serviceId, playerId);
+
         this.endpointId = playerId;
     }
 
     sendQuizId(quizId) {
         console.warn("sending: " + quizId);
         let obj = { type: "GameDetails", quizId: quizId };
+        
         NearbyConnection.sendBytes(serviceId, this.endpointId, JSON.stringify(obj));
+
+        this.onReceivePayload();
     }
 
-    onGameDetailsReceived(callback) {
-        this.gameDetailsCallback = callback;
+    sendPlayerName(name) {
+        console.warn("sending: " + name);
+        let obj = { type: "PlayerName", name: name };
+        
+        NearbyConnection.sendBytes(serviceId, this.endpointId, JSON.stringify(obj));
+
+        this.onReceivePayload();
     }
 
     sendAnswers(answerInd, friendAnswerInd) {
@@ -120,8 +143,16 @@ export default class GameService {
         this.onReceivePayload();
     }
 
+    onGameDetailsReceived(callback) {
+        this.gameDetailsCallback = callback;
+    }
+
     onAnswersReceived(callback) {
         this.answersCallback = callback;
+    }
+
+    onPlayerNameReceived(callback) {
+        this.playerNameCallback = callback;
     }
 
     handleQuizIdMessage(msg) {
@@ -133,6 +164,12 @@ export default class GameService {
     handleAnswersMessage(msg) {
         if (!!this.answersCallback) {
             this.answersCallback(msg.answer, msg.guess);
+        }
+    }
+
+    handlePlayerNameMessage(endpointId, msg) {
+        if (!!this.playerNameCallback) {
+            this.playerNameCallback({playerId: endpointId, playerName: msg.name});
         }
     }
 }

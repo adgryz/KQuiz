@@ -1,16 +1,18 @@
 import React from 'react';
 import { View, Button, TextInput } from 'react-native';
 import { StackNavigator } from 'react-navigation';
+import downloadAll from '../QuizStorage';
 
 export default class Landing extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { username: "" };
+    this.state = { username: ""};
   }
 
   render() {
-
+    if (this.state.loading) 
+            return (<View><Text>loading</Text></View>);
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <TextInput

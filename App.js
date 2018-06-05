@@ -35,6 +35,10 @@ const RootStack = StackNavigator(
   },
   {
     initialRouteName: 'Landing',
+    navigationOptions: {
+      title: 'kQuiz',
+      headerLeft: null
+    }
   }
 );
 

@@ -23,7 +23,12 @@ export default class Quiz extends React.Component {
                     friendGuess: currentQuestion.answers[guessId], 
                     receivedAnswers: true
                 });
+            
+            if (this.state.phase === "waiting")
+                this.changePhase();
         })
+
+        console.warn("constructor");
     }
 
     render() {
@@ -116,7 +121,7 @@ export default class Quiz extends React.Component {
             let answerInd = currentQuestion.answers.indexOf(this.state.yourAnswer);
             let guessInd = currentQuestion.answers.indexOf(this.state.yourGuess);
             gameService.sendAnswers(answerInd, guessInd);
-            console.warn("answers sent");
+            console.warn("answers sent, gonna wait");
             this.setState({ phase: "waiting" });
         }
 
@@ -124,6 +129,7 @@ export default class Quiz extends React.Component {
             let answerInd = currentQuestion.answers.indexOf(this.state.yourAnswer);
             let guessInd = currentQuestion.answers.indexOf(this.state.yourGuess);
             gameService.sendAnswers(answerInd, guessInd);
+            console.warn("answers sent, go to answer");
             this.setState({ phase: "answer" });
         }
 

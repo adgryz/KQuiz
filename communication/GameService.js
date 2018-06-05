@@ -58,46 +58,38 @@ export default class GameService {
 
             this.endpointId = endpointId;
 
-            NearbyConnection.onReceivePayload(({
-                serviceId,              // A unique identifier for the service
-                endpointId,             // ID of the endpoint we got the payload from
-                payloadType,            // The type of this payload (File or a Stream) [See Payload](https://developers.google.com/android/reference/com/google/android/gms/nearby/connection/Payload)
-                payloadId               // Unique identifier of the payload
-            }) => {
-                console.warn("onreceivepayload");
-                NearbyConnection.readBytes(
-                    serviceId, 
-                    endpointId, 
-                    payloadId
-                ).then(({
-                    type,                    // The Payload.Type represented by this payload
-                    bytes,                   // \[Payload\.Type\.BYTES\] The bytes string that was sent
-                    payloadId,               // \[Payload\.Type\.FILE\ or Payload\.Type\.STREAM\] The payloadId of the payload this payload is describing
-                    filename,                // \[Payload\.Type\.FILE\] The name of the file being sent
-                    metadata,                // \[Payload\.Type\.FILE\] The metadata sent along with the file
-                    streamType,              // \[Payload\.Type\.STREAM\] The type of stream this is \[audio or video\]
-                }) => {
-                    console.warn(bytes);
-                    
-                    let obj = JSON.parse(bytes);
-
-                    if (!obj['type'])
-                        console.error('received corrupted message');
-
-                    if (obj['type'] === 'GameDetails')
-                        this.handleQuizIdMessage(obj);
-                    else if (obj['type'] === 'Answers')
-                        this.handleAnswersMessage(obj);
-                    
-                    //callback(parseInt(bytes));
-                });
-            });
+            this.onReceivePayload();
 
             acceptCallback();
         });
 
         console.warn("gameId: " + gameId);
         NearbyConnection.connectToEndpoint("KQUIZ", gameId);
+    }
+
+    onReceivePayload() {
+        NearbyConnection.onReceivePayload(({ serviceId, // A unique identifier for the service
+            endpointId, // ID of the endpoint we got the payload from
+            payloadType, // The type of this payload (File or a Stream) [See Payload](https://developers.google.com/android/reference/com/google/android/gms/nearby/connection/Payload)
+            payloadId // Unique identifier of the payload
+        }) => {
+            console.warn("onreceivepayload");
+            NearbyConnection.readBytes(serviceId, endpointId, payloadId).then(({ type, // The Payload.Type represented by this payload
+                bytes, // \[Payload\.Type\.BYTES\] The bytes string that was sent
+                payloadId, // \[Payload\.Type\.FILE\ or Payload\.Type\.STREAM\] The payloadId of the payload this payload is describing
+                filename, // \[Payload\.Type\.FILE\] The name of the file being sent
+                metadata, // \[Payload\.Type\.FILE\] The metadata sent along with the file
+                streamType, }) => {
+                console.warn(bytes);
+                let obj = JSON.parse(bytes);
+                if (!obj['type'])
+                    console.error('received corrupted message');
+                if (obj['type'] === 'GameDetails')
+                    this.handleQuizIdMessage(obj);
+                else if (obj['type'] === 'Answers')
+                    this.handleAnswersMessage(obj);
+            });
+        });
     }
 
     choosePlayer(playerId) {
@@ -124,6 +116,8 @@ export default class GameService {
         };
 
         NearbyConnection.sendBytes(serviceId, this.endpointId, JSON.stringify(obj));
+
+        this.onReceivePayload();
     }
 
     onAnswersReceived(callback) {

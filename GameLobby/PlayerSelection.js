@@ -56,6 +56,8 @@ export default class PlayerSelection extends React.Component {
                         color="#F44336"
                         onPress={() => {
                             console.warn("asd");
+                            console.log(quiz.id);
+                            console.log(this.state.selectedPlayer.id);
                             gameService.choosePlayer(this.state.selectedPlayer.id);
                             gameService.sendQuizId(quiz.id);
 

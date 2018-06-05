@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
-import { gameService } from '../communication/GameService.js'
+import { gameService } from '../communication/GameService.js';
+import getQuiz from "../QuizStorage";
 
 export default class Waiting extends React.Component {
 
@@ -8,29 +9,34 @@ export default class Waiting extends React.Component {
         super(props);
         const { params } = props.navigation.state;
 
-        this.state = { playerAccepted: false, gameId: params.gameId };
+        this.state = { playerAccepted: false, gameId: params.gameId, quiz: undefined };
     }
 
     componentDidMount() {
         gameService.joinGame(
             this.state.gameId,
             () => {
-                gameService.onGameDetailsReceived((quizId) => {
+                gameService.onGameDetailsReceived(async (quizId) => {
                     console.warn("game details received");
 
                     const { params } = this.props.navigation.state;
                     const username = params ? params.username : null;
                     const friendname = params ? params.friendname : null;
-
                     this.setState({ playerAccepted: true });
+                    const q = await this.downloadQuiz(quizId);
+                    console.log(q);
                     this.props.navigation.navigate('QuizStart', {
                         username: username,
-                        quiz: this.fakeQuizes.filter(quiz => quiz.id === quizId)[0],
+                        quiz: q,
                         friendname: friendname
                     });
                 })
             }
         );
+    }
+
+    downloadQuiz = async (key) => {
+        return await getQuiz(key);
     }
 
     fakeQuizes = [
@@ -87,6 +93,7 @@ export default class Waiting extends React.Component {
             </View>
         );
     }
+    
 
     selectQuiz = (quiz) => this.setState({ selectedQuiz: quiz });
 }

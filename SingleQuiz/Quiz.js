@@ -9,6 +9,7 @@ import { gameService } from '../communication/GameService';
 
 export default class Quiz extends React.Component {
 
+
     constructor(props) {
         super(props);
         this.state = { phase: "player", questionNo: 0, yourScore: 0, friendScore: 0, receivedAnswers: false }
@@ -18,17 +19,15 @@ export default class Quiz extends React.Component {
             const { params } = this.props.navigation.state;
             let currentQuestion = params.quiz.questions[this.state.questionNo];
             this.setState(
-                { 
-                    friendAnswer: currentQuestion.answers[answerId], 
-                    friendGuess: currentQuestion.answers[guessId], 
+                {
+                    friendAnswer: currentQuestion.answers[answerId],
+                    friendGuess: currentQuestion.answers[guessId],
                     receivedAnswers: true
                 });
-            
+
             if (this.state.phase === "waiting")
                 this.changePhase();
         })
-
-        console.warn("constructor");
     }
 
     render() {
@@ -113,9 +112,9 @@ export default class Quiz extends React.Component {
         else if (this.state.phase == "player")
             this.setState({ phase: "friend" });
 
-            // gameService.onAnswersReceived((answerId, guessId) => {
-            //     this.setState({ friendAnswer: currentQuestion.answers[answerId], friendGuess: currentQuestion[guessId], receivedAnswers: true });
-            // })
+        // gameService.onAnswersReceived((answerId, guessId) => {
+        //     this.setState({ friendAnswer: currentQuestion.answers[answerId], friendGuess: currentQuestion[guessId], receivedAnswers: true });
+        // })
 
         else if (this.state.phase == "friend" || this.state.phase == "waiting" && !this.state.receivedAnswers) {
             let answerInd = currentQuestion.answers.indexOf(this.state.yourAnswer);

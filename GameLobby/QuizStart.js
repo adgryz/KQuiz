@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
-import { StackNavigator } from 'react-navigation';
+import { NavigationActions, StackNavigator } from 'react-navigation';
 
 export default class QuizStart extends React.Component {
 
@@ -13,11 +13,25 @@ export default class QuizStart extends React.Component {
             const username = params ? params.username : null;
             const friendname = params ? params.friendname : null;
             const quiz = params ? params.quiz : null;
-            props.navigation.navigate('Quiz', {
-                username: username,
-                friendname: friendname,
-                quiz: quiz
-            });
+            this.props
+                .navigation
+                .dispatch(NavigationActions.reset(
+                    {
+                        index: 1,
+                        actions: [
+                            NavigationActions.navigate({ routeName: 'Landing' }),
+                            NavigationActions.navigate(
+                                {
+                                    routeName: 'Quiz',
+                                    params: {
+                                        username: username,
+                                        friendname: friendname,
+                                        quiz: quiz
+                                    }
+                                }
+                            )
+                        ],
+                    }));
         }, 1000);
 
     }

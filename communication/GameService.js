@@ -11,9 +11,6 @@ export default class GameService {
             NearbyConnection.stopDiscovering(serviceId);
         });
 
-        NearbyConnection.startAdvertising("XD", "TEST", Strategy.P2P_STAR);
-        //NearbyConnection.stopAdvertising(serviceId);
-
         NearbyConnection.startDiscovering(
             serviceId,
             Strategy.P2P_STAR
@@ -119,13 +116,19 @@ export default class GameService {
     sendQuizId(quizId) {
         console.warn("sending: " + quizId);
         let obj = { type: "GameDetails", quizId: quizId };
+        
         NearbyConnection.sendBytes(serviceId, this.endpointId, JSON.stringify(obj));
+
+        this.onReceivePayload();
     }
 
     sendPlayerName(name) {
-        console.warn("sending: " + quizId);
+        console.warn("sending: " + name);
         let obj = { type: "PlayerName", name: name };
+        
         NearbyConnection.sendBytes(serviceId, this.endpointId, JSON.stringify(obj));
+
+        this.onReceivePayload();
     }
 
     sendAnswers(answerInd, friendAnswerInd) {
@@ -166,7 +169,7 @@ export default class GameService {
 
     handlePlayerNameMessage(endpointId, msg) {
         if (!!this.playerNameCallback) {
-            this.playerNameCallback({id: endpointId, name: msg.name});
+            this.playerNameCallback({playerId: endpointId, playerName: msg.name});
         }
     }
 }

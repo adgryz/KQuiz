@@ -1,13 +1,22 @@
 import React from 'react';
-import { View, Button, TextInput } from 'react-native';
+import { View, Button, TextInput, Text } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-import downloadAll from '../QuizStorage';
+import  {quizDatabase}  from '../QuizTest';
 
 export default class Landing extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { username: ""};
+    this.state = { username: "", loading: true};
+  }
+
+  async componentDidMount(){
+    await quizDatabase.getQuizzes();
+    console.log('halo');
+    console.log(quizDatabase.quizzes);
+    this.setState({
+      loading: false
+    });
   }
 
   render() {

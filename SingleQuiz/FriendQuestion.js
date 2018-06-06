@@ -19,7 +19,7 @@ export class FriendQuestion extends React.Component {
                         key={answer}
                         onPress={() => this.props.onSelect(answer)}
                         style={{ color: this.props.selectedAnswer === answer ? "#673AB7" : "#2196F3" }}>
-                        {answer}
+                        {this.props.friendname + ": " + answer}
                     </Text>)
                 }
             </View>

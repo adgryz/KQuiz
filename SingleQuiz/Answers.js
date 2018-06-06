@@ -5,7 +5,7 @@ export class Answers extends React.Component {
 
     constructor(props) {
         super(props);
-        
+
         this.updateScores();
     }
 
@@ -15,11 +15,29 @@ export class Answers extends React.Component {
                 <Text>Qustion :</Text>
                 <Text>{this.props.question.text}</Text>
                 <Text></Text>
-                <Text>Answer about you: {this.props.yourAnswer}</Text>
-                <Text>{this.props.friendname}'s guess about you: {this.props.friendGuess}</Text>
+                <Text>You: {this.props.yourAnswer}</Text>
+                {
+                    this.props.yourAnswer === this.props.friendGuess ?
+                        <Text style={{ fontWeight: 'bold', color='#4CAF50' }}>
+                            {this.props.friendname} was right
+                        </Text>
+                        :
+                        <Text style={{ fontWeight: 'bold', color='#f44336' }} >
+                            {this.props.friendname} was wrong: {this.props.friendGuess}
+                        </Text>
+                }
                 <Text></Text>
-                <Text>Answer about {this.props.friendname}: {this.props.friendAnswer}</Text>
-                <Text>Your guess about {this.props.friendname}: {this.props.yourGuess}</Text>
+                <Text>{this.props.friendname}: {this.props.friendAnswer}</Text>
+                {
+                    this.props.friendAnswer === this.props.yourGuess ?
+                        <Text style={{ fontWeight: 'bold', color='#4CAF50' }}>
+                            You was right
+                        </Text>
+                        :
+                        <Text style={{ fontWeight: 'bold', color='#f44336' }}>
+                            You was wrong: {this.props.yourGuess}
+                        </Text>
+                }
             </View>
         );
     }

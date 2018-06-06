@@ -53,3 +53,5 @@ export default class Landing extends React.Component {
     );
   }
 }
+
+const answers = ['Spaghetti', 'Carbonara', 'Pizza', 'Lazagne'];

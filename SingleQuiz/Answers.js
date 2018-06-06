@@ -18,11 +18,11 @@ export class Answers extends React.Component {
                 <Text>You: {this.props.yourAnswer}</Text>
                 {
                     this.props.yourAnswer === this.props.friendGuess ?
-                        <Text style={{ fontWeight: 'bold', color='#4CAF50' }}>
+                        <Text style={{ fontWeight: 'bold', color: '#4CAF50' }}>
                             {this.props.friendname} was right
                         </Text>
                         :
-                        <Text style={{ fontWeight: 'bold', color='#f44336' }} >
+                        <Text style={{ fontWeight: 'bold', color: '#f44336' }} >
                             {this.props.friendname} was wrong: {this.props.friendGuess}
                         </Text>
                 }
@@ -30,11 +30,11 @@ export class Answers extends React.Component {
                 <Text>{this.props.friendname}: {this.props.friendAnswer}</Text>
                 {
                     this.props.friendAnswer === this.props.yourGuess ?
-                        <Text style={{ fontWeight: 'bold', color='#4CAF50' }}>
+                        <Text style={{ fontWeight: 'bold', color: '#4CAF50' }}>
                             You was right
                         </Text>
                         :
-                        <Text style={{ fontWeight: 'bold', color='#f44336' }}>
+                        <Text style={{ fontWeight: 'bold', color: '#f44336' }}>
                             You was wrong: {this.props.yourGuess}
                         </Text>
                 }

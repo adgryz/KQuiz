@@ -1,16 +1,16 @@
 import React from 'react';
 import { View, Button, TextInput, Text } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-import  {quizDatabase}  from '../QuizTest';
+import { quizDatabase } from '../QuizTest';
 
 export default class Landing extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { username: "", loading: true};
+    this.state = { username: "", loading: true };
   }
 
-  async componentDidMount(){
+  async componentDidMount() {
     await quizDatabase.getQuizzes();
     console.log('halo');
     console.log(quizDatabase.quizzes);
@@ -20,8 +20,8 @@ export default class Landing extends React.Component {
   }
 
   render() {
-    if (this.state.loading) 
-            return (<View><Text>loading</Text></View>);
+    if (this.state.loading)
+      return (<View><Text>loading</Text></View>);
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <TextInput
@@ -32,6 +32,7 @@ export default class Landing extends React.Component {
         <View style={{ padding: 5, margin: 15 }}>
           <Button
             title="Start Game"
+            disabled={this.state.username.length === 0}
             onPress={() => {
               this.props.navigation.navigate('QuizSelection', {
                 username: this.state.username,
@@ -41,6 +42,7 @@ export default class Landing extends React.Component {
         <View style={{ padding: 5, margin: 15 }}>
           <Button
             title="Join Game"
+            disabled={this.state.username.length === 0}
             onPress={() => {
               this.props.navigation.navigate('GameSelection', {
                 username: this.state.username,

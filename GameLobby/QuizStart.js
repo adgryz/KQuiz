@@ -19,7 +19,12 @@ export default class QuizStart extends React.Component {
                     {
                         index: 1,
                         actions: [
-                            NavigationActions.navigate({ routeName: 'Landing' }),
+                            NavigationActions.navigate({
+                                routeName: 'Landing',
+                                params: {
+                                    username: username
+                                }
+                            }),
                             NavigationActions.navigate(
                                 {
                                     routeName: 'Quiz',
@@ -32,7 +37,7 @@ export default class QuizStart extends React.Component {
                             )
                         ],
                     }));
-        }, 1000);
+        }, 3500);
 
     }
 
@@ -43,11 +48,15 @@ export default class QuizStart extends React.Component {
         const quiz = params ? params.quiz : null;
 
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Quiz {quiz.title} started</Text>
-                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{username}</Text>
-                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>&</Text>
-                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{friendname}</Text>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#303030' }}>
+                <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 15, color: '#F2F2F2' }}>Quiz &nbsp;
+                    <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 15, color: '#0AD560' }}>
+                        {quiz.title}
+                    </Text>
+                    , started</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 18 , color: '#F2F2F2'}}>{username}</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#F2F2F2'}}>&</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#F2F2F2'}}>{friendname}</Text>
             </View>
         );
     }

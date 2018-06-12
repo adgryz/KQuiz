@@ -1,4 +1,4 @@
-rootProject.name = 'KQuiz'
+rootProject.name = 'CoolQuiz'
 include ':react-native-google-nearby-connection'
 project(':react-native-google-nearby-connection').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-google-nearby-connection/android')
 include ':react-native-firebase'

@@ -1,4 +1,4 @@
-package com.kquiz;
+package com.CoolQuiz;
 
 import android.app.Application;
 

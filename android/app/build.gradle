@@ -102,7 +102,7 @@ android {
     buildToolsVersion "26.0.1"
 
     defaultConfig {
-        applicationId "com.kquiz"
+        applicationId "com.CoolQuiz"
         minSdkVersion 16
         targetSdkVersion 26
         multiDexEnabled true

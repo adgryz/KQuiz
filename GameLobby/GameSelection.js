@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
 import { gameService } from '../communication/GameService';
+import NavButton from "../Custom/NavButton";
+import OptionButton from "../Custom/OptionButton";
 
 export default class GameSelection extends React.Component {
 
@@ -17,8 +19,6 @@ export default class GameSelection extends React.Component {
             gameId,
             gameName,
         }) => {
-            // An endpoint has been discovered we can connect to
-            console.warn("endpoint discovered: " + gameId + " " + gameName);
             this.state.availableGames.push({ id: gameId, owner: gameName });
 
             this.setState({
@@ -32,28 +32,36 @@ export default class GameSelection extends React.Component {
         const username = params ? params.username : null;
 
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Join Game : </Text>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#303030' }}>
+                <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 15, color: '#F2F2F2' }}>Join Game</Text>
                 {
                     this.state.availableGames.map(game => <View key={game.id + game.owner} style={{ padding: 5 }}>
-                        <Button
-                            color={this.state.selectedGame === game ? "#673AB7" : "#2196F3"}
-                            title={game.owner}
+                        <OptionButton
+                            isSelected={this.state.selectedGame === game}
+                            title={game.owner + "'s quiz"}
                             onPress={() => this.selectGame(game)} />
                     </View>)
                 }
-                <View style={{ padding: 10 }}>
-                    <Button
+                {
+                    this.state.availableGames.length === 0 &&
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#231F20' }}>NO GAMES :(</Text>
+                }
+                <View style={{ padding: 10, marginTop: 15 }}>
+                    <NavButton
                         disabled={!this.state.selectedGame}
                         title="Start Game"
-                        color="#F44336"
+                        bgColor="#f44336"
                         onPress={() => {
                             this.props.navigation.navigate('Waiting', {
                                 username: username,
                                 gameId: this.state.selectedGame.id,
                                 friendname: this.state.selectedGame.owner
                             });
-                        }} />
+                        }}
+                        color="#303030"
+                        bgColorDisabled="#231F20"
+                        colorDisabled="#303030"
+                    />
                 </View>
             </View>
         );

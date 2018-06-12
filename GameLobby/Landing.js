@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Button, TextInput, Text, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Button, TextInput, Text, TouchableOpacity, ImageBackground, ActivityIndicator } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import { quizDatabase } from '../QuizTest';
 import NavButton from '../Custom/NavButton';
@@ -23,7 +23,11 @@ export default class Landing extends React.Component {
 
   render() {
     if (this.state.loading)
-      return (<View style={{ flex: 1, backgroundColor: '#303030' }}><Text>loading</Text></View>);
+      return (
+        <View style={{ flex: 1, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#0AD560" />
+        </View>
+      );
     return (
       <View style={{ flex: 1, backgroundColor: '#303030' }}>
         <ImageBackground source={require('../Images/RiddleBg.png')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>

@@ -1,5 +1,5 @@
-import NearbyConnection, {CommonStatusCodes, ConnectionsStatusCodes, Strategy, Payload, PayloadTransferUpdate} from 'react-native-google-nearby-connection';
-const serviceId = "KQUIZ";
+import NearbyConnection, { CommonStatusCodes, ConnectionsStatusCodes, Strategy, Payload, PayloadTransferUpdate } from 'react-native-google-nearby-connection';
+const serviceId = "CoolQuiz";
 
 export default class GameService {
     searchForGames(callback) {
@@ -7,7 +7,7 @@ export default class GameService {
             endpointId,
             endpointName,
         }) => {
-            callback({gameId: endpointId, gameName: endpointName});
+            callback({ gameId: endpointId, gameName: endpointName });
             NearbyConnection.stopDiscovering(serviceId);
         });
 
@@ -27,7 +27,7 @@ export default class GameService {
             serviceId,              // A unique identifier for the service
             incomingConnection      // True if the connection request was initated from a remote device.
         }) => {
-            
+
             //playerJoinCallback({playerId: endpointId, playerName: ""});
             NearbyConnection.acceptConnection(serviceId, endpointId);
         });
@@ -37,7 +37,7 @@ export default class GameService {
             endpointName,           // The name of the service
             serviceId,              // A unique identifier for the service
         }) => {
-            console.warn("connected to endpoint");
+            //console.warn("connected to endpoint");
             this.onReceivePayload();
         });
 
@@ -58,7 +58,7 @@ export default class GameService {
             serviceId,              // A unique identifier for the service
             incomingConnection      // True if the connection request was initated from a remote device.
         }) => {
-            console.warn("accept connection to host");
+            //console.warn("accept connection to host");
             NearbyConnection.acceptConnection(serviceId, endpointId);
         });
 
@@ -67,7 +67,7 @@ export default class GameService {
             endpointName,           // The name of the service
             serviceId,              // A unique identifier for the service
         }) => {
-            console.warn("connected to endpoint");
+            //console.warn("connected to endpoint");
 
             this.endpointId = endpointId;
 
@@ -75,8 +75,8 @@ export default class GameService {
             this.sendPlayerName(playerName);
         });
 
-        console.warn("gameId: " + gameId);
-        NearbyConnection.connectToEndpoint("KQUIZ", gameId);
+        //console.warn("gameId: " + gameId);
+        NearbyConnection.connectToEndpoint("CoolQuiz", gameId);
     }
 
     onReceivePayload() {
@@ -85,14 +85,14 @@ export default class GameService {
             payloadType, // The type of this payload (File or a Stream) [See Payload](https://developers.google.com/android/reference/com/google/android/gms/nearby/connection/Payload)
             payloadId // Unique identifier of the payload
         }) => {
-            console.warn("onreceivepayload");
+            //console.warn("onreceivepayload");
             NearbyConnection.readBytes(serviceId, endpointId, payloadId).then(({ type, // The Payload.Type represented by this payload
                 bytes, // \[Payload\.Type\.BYTES\] The bytes string that was sent
                 payloadId, // \[Payload\.Type\.FILE\ or Payload\.Type\.STREAM\] The payloadId of the payload this payload is describing
                 filename, // \[Payload\.Type\.FILE\] The name of the file being sent
                 metadata, // \[Payload\.Type\.FILE\] The metadata sent along with the file
                 streamType, }) => {
-                console.warn(bytes);
+                //console.warn(bytes);
                 let obj = JSON.parse(bytes);
                 if (!obj['type'])
                     console.error('received corrupted message');
@@ -107,25 +107,25 @@ export default class GameService {
     }
 
     choosePlayer(playerId) {
-        console.warn("accept connection from player: " + playerId);
+        //console.warn("accept connection from player: " + playerId);
         //NearbyConnection.acceptConnection(serviceId, playerId);
 
         this.endpointId = playerId;
     }
 
     sendQuizId(quizId) {
-        console.warn("sending: " + quizId);
+        //console.warn("sending: " + quizId);
         let obj = { type: "GameDetails", quizId: quizId };
-        
+
         NearbyConnection.sendBytes(serviceId, this.endpointId, JSON.stringify(obj));
 
         this.onReceivePayload();
     }
 
     sendPlayerName(name) {
-        console.warn("sending: " + name);
+        //console.warn("sending: " + name);
         let obj = { type: "PlayerName", name: name };
-        
+
         NearbyConnection.sendBytes(serviceId, this.endpointId, JSON.stringify(obj));
 
         this.onReceivePayload();
@@ -169,7 +169,7 @@ export default class GameService {
 
     handlePlayerNameMessage(endpointId, msg) {
         if (!!this.playerNameCallback) {
-            this.playerNameCallback({playerId: endpointId, playerName: msg.name});
+            this.playerNameCallback({ playerId: endpointId, playerName: msg.name });
         }
     }
 }

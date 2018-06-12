@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
 import { gameService } from '../communication/GameService.js';
-import { quizDatabase} from '../QuizTest';
+import { quizDatabase } from '../QuizTest';
+import NavButton from "../Custom/NavButton";
 
 export default class Waiting extends React.Component {
 
@@ -18,7 +19,7 @@ export default class Waiting extends React.Component {
             this.state.username,
             () => {
                 gameService.onGameDetailsReceived(async (quizId) => {
-                    console.warn("game details received");
+                    //console.warn("game details received");
 
                     const { params } = this.props.navigation.state;
                     const username = params ? params.username : null;
@@ -33,7 +34,7 @@ export default class Waiting extends React.Component {
             }
         );
     }
-   
+
     render() {
         const { params } = this.props.navigation.state;
         const username = params ? params.username : null;
@@ -41,19 +42,23 @@ export default class Waiting extends React.Component {
         const friendname = params ? params.friendname : null;
 
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Waiting for acceptance ...</Text>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#303030' }}>
+                <Text style={{ fontWeight: 'bold', fontSize: 18, color: "#231F20" }}>Waiting for acceptance ...</Text>
 
-                <View style={{ padding: 10 }}>
-                    <Button
-                        title="Cancel"
-                        color="#F44336"
+                <View style={{ padding: 10, marginTop: 15 }}>
+                    <NavButton
+                        title="CANCEL"
+                        bgColor="#f44336"
+                        color="#303030"
+                        bgColorDisabled="#231F20"
+                        colorDisabled="#303030"
+                        disabled={false}
                         onPress={() => this.props.navigation.goBack()} />
                 </View>
             </View>
         );
     }
-    
+
 
     selectQuiz = (quiz) => this.setState({ selectedQuiz: quiz });
 }

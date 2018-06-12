@@ -10,8 +10,8 @@ export class AnswerWaiting extends React.Component {
     render() {
 
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Waiting for {this.props.friendname} answers ...</Text>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#303030' }}>
+                <Text style={{ fontWeight: 'bold', fontSize: 18, color: "#231F20" }}>Waiting for {this.props.friendname} answers ...</Text>
             </View>
         );
     }

@@ -1,21 +1,22 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
-import { StackNavigator } from 'react-navigation';
+import { NavigationActions, StackNavigator } from 'react-navigation';
 import { PlayerQuestion } from './PlayerQuestion';
 import { FriendQuestion } from './FriendQuestion';
 import { Answers } from './Answers';
 import { AnswerWaiting } from './AnswerWaiting';
 import { gameService } from '../communication/GameService';
+import NavButton from '../Custom/NavButton';
 
 export default class Quiz extends React.Component {
 
 
     constructor(props) {
         super(props);
-        this.state = { phase: "player", questionNo: 0, yourScore: 0, friendScore: 0, receivedAnswers: false }
+        this.state = { phase: "player", questionNo: 0, yourScore: 0, friendScore: 0, receivedAnswers: false, backgroundColor: '#303030' }
 
         gameService.onAnswersReceived((answerId, guessId) => {
-            console.warn("answers received");
+            //console.warn("answers received");
             const { params } = this.props.navigation.state;
             let currentQuestion = params.quiz.questions[this.state.questionNo];
             this.setState(
@@ -37,10 +38,10 @@ export default class Quiz extends React.Component {
         const quiz = params ? params.quiz : null;
 
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text>Question {this.state.questionNo + 1}</Text>
-                <Text>Your Score : {this.state.yourScore}</Text>
-                <Text>Friend's Score: {this.state.friendScore}</Text>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#303030' }}>
+                <Text style={{marginTop: 30, fontWeight: 'bold', fontSize: 16,  color: '#F2F2F2'}}>Question {this.state.questionNo + 1}</Text>
+                <Text style={{fontWeight: 'bold', fontSize: 16,  color: '#F2F2F2'}}>You : {this.state.yourScore}</Text>
+                <Text style={{fontWeight: 'bold', fontSize: 16,  color: '#F2F2F2'}}>{friendname} : {this.state.friendScore}</Text>
                 {
                     this.state.phase === "player" &&
                     <PlayerQuestion
@@ -72,12 +73,12 @@ export default class Quiz extends React.Component {
                         friendGuess={this.state.friendGuess}
                         changeScores={this.changeScores} />
                 }
-                <View style={{ padding: 10 }}>
-                    <Button
+                <View style={{ padding: 10, marginBottom: 30 }}>
+                    <NavButton
+                        title="NEXT"
                         disabled={this.isNextDisabled()}
-                        title="Next"
-                        color="#F44336"
-                        onPress={this.changePhase} />
+                        onPress={this.changePhase}
+                    />
                 </View>
             </View>
         );
@@ -104,9 +105,32 @@ export default class Quiz extends React.Component {
     changePhase = () => {
         const { params } = this.props.navigation.state;
         let currentQuestion = params.quiz.questions[this.state.questionNo];
-
         if (this.state.questionNo === params.quiz.questions.length - 1 && this.state.phase == "answer") {
-            this.props.navigation.navigate('Landing', {});
+            this.props
+                .navigation
+                .dispatch(NavigationActions.reset(
+                    {
+                        index: 1,
+                        actions: [
+                            NavigationActions.navigate({
+                                routeName: 'Landing',
+                                params: {
+                                    username: this.props.navigation.state.params.username
+                                }
+                            }),
+                            NavigationActions.navigate(
+                                {
+                                    routeName: 'QuizEnd',
+                                    params: {
+                                        friendname: this.props.navigation.state.params.friendname,
+                                        username: this.props.navigation.state.params.username,
+                                        friendScore: this.state.friendScore,
+                                        yourScore: this.state.yourScore
+                                    }
+                                }
+                            )
+                        ],
+                    }));
         }
 
         else if (this.state.phase == "player")
@@ -120,7 +144,7 @@ export default class Quiz extends React.Component {
             let answerInd = currentQuestion.answers.indexOf(this.state.yourAnswer);
             let guessInd = currentQuestion.answers.indexOf(this.state.yourGuess);
             gameService.sendAnswers(answerInd, guessInd);
-            console.warn("answers sent, gonna wait");
+            //console.warn("answers sent, gonna wait");
             this.setState({ phase: "waiting" });
         }
 
@@ -128,7 +152,7 @@ export default class Quiz extends React.Component {
             let answerInd = currentQuestion.answers.indexOf(this.state.yourAnswer);
             let guessInd = currentQuestion.answers.indexOf(this.state.yourGuess);
             gameService.sendAnswers(answerInd, guessInd);
-            console.warn("answers sent, go to answer");
+            //console.warn("answers sent, go to answer");
             this.setState({ phase: "answer" });
         }
 

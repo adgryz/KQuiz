@@ -7,7 +7,8 @@ import GameSelection from "./GameLobby/GameSelection";
 import PlayerSelection from "./GameLobby/PlayerSelection";
 import Waiting from "./GameLobby/Waiting";
 import QuizStart from "./GameLobby/QuizStart";
-import Quiz from "./SingleQuiz/Quiz"
+import Quiz from "./SingleQuiz/Quiz";
+import QuizEnd from "./SingleQuiz/QuizEnd";
 
 const RootStack = StackNavigator(
   {
@@ -31,13 +32,17 @@ const RootStack = StackNavigator(
     },
     Quiz: {
       screen: Quiz
+    },
+    QuizEnd: {
+      screen: QuizEnd
     }
   },
   {
+    headerMode: 'none',
     initialRouteName: 'Landing',
     navigationOptions: {
-      title: 'kQuiz',
-      headerLeft: null
+      title: null,
+      headerLeft: null,
     }
   }
 );

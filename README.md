@@ -1,4 +1,4 @@
-#### First team project in ReactNative
+## First team project in ReactNative
 
 ### Purpose
 KQuiz is a quiz to play in same room with your friend.
